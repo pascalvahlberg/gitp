@@ -7,7 +7,6 @@ from fnmatch import fnmatch
 import os
 
 try:
-	i = 1000
 	revision = Popen("git log --oneline | wc -l", shell=True, stdout=PIPE).stdout.read().rstrip()
 	revision = str(int(revision) + 1)
 
@@ -60,12 +59,17 @@ try:
 	Popen("git add .", shell=True)
 
 	if len(argv) > 1:
-		commit = "["+revision+"] "+' '.join(argv[1:])
+		commit = "[" + revision + "] " + ' '.join(argv[1:])
 	else:
-		commit = "["+revision+"] Other/Checksum: "+md5(revision).hexdigest()
+		file_reader = open("list", "r")
+		file_content = file_reader.read()
+		file_reader.close()
+		file_checksum = md5(file_content).hexdigest()
+		commit = "[" + revision + "] Other/Checksum: " + file_checksum
 
 	Popen("git commit -m '" + commit + "' -s", shell=True).wait()
 	Popen("git push origin master", shell=True).wait()
+
 except Exception,e:
 	print(e)
 
