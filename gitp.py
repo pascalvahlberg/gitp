@@ -40,15 +40,14 @@ try:
 	for root, dirs, files in os.walk("."):
 		for name in files:
 			if not os.path.join(root[2:], name) == "list" and not os.path.join(root[2:], name) == "version" and not os.path.join(root[2:], name) == ".gitignore" and not os.path.join(root[2:], name).startswith(".git/"):
+				ignored = False
+
 				if os.access(".gitignore", os.R_OK):
 					for ignore in open(".gitignore", "r"):
-						if not fnmatch(os.path.join(root[2:], name), ignore.rstrip()) and not fnmatch(name, ignore.rstrip()):
-							file_reader = open(os.path.join(root[2:], name), "r")
-							file_content = file_reader.read()
-							file_reader.close()
-							file_checksum = md5(file_content).hexdigest()
-							file_writer.write(os.path.join(root[2:], name) + " " + file_checksum + "\n")
-				else:
+						if fnmatch(os.path.join(root[2:], name), ignore.rstrip()) or not fnmatch(name, ignore.rstrip()):
+							ignored = True
+
+				if not ignored:				
 					file_reader = open(os.path.join(root[2:], name), "r")
 					file_content = file_reader.read()
 					file_reader.close()
