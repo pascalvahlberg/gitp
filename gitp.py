@@ -44,7 +44,7 @@ try:
 
 				if os.access(".gitignore", os.R_OK):
 					for ignore in open(".gitignore", "r"):
-						if fnmatch(os.path.join(root[2:], name), ignore.rstrip()) or not fnmatch(name, ignore.rstrip()):
+						if fnmatch(os.path.join(root[2:], name), ignore.rstrip()) or fnmatch(name, ignore.rstrip()):
 							ignored = True
 
 				if not ignored:				
