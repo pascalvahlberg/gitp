@@ -55,7 +55,7 @@ try:
 					file_writer.write(os.path.join(root[2:], name) + " " + file_checksum + "\n")
 
 	file_writer.close()
-	Popen("git add .", shell=True)
+	Popen("git add .", shell=True).wait()
 
 	if len(argv) > 1:
 		commit = "[" + revision + "] " + ' '.join(argv[1:])
