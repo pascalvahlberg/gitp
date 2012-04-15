@@ -23,32 +23,31 @@ try:
 	f.write(version)
 	f.close()
 
-	if os.access("list", os.F_OK):
-		for lists in open("list", "r"):
-			filename = lists.rstrip().split()[0]
-			list_checksum = lists.rstrip().split()[1]
-			if not os.access(filename, os.F_OK):
-				Popen("git rm " + filename, shell=True).wait()
-
-		file_writer = open("list", "w")
-		file_writer.write("")
-
-		for root, dirs, files in os.walk("."):
-			for name in files:
-				if not os.path.join(root[2:], name) == "list" and not os.path.join(root[2:], name).startswith(".git/"):
-					file_reader = open(os.path.join(root[2:], name), "r")
-					file_content = file_reader.read()
-					file_reader.close()
-					file_checksum = md5(file_content).hexdigest()
-					file_writer.write(os.path.join(root[2:], name) + " " + file_checksum + "\n")
-					Popen("git add " + os.path.join(root[2:], name), shell=True)
-
-		Popen("git add list", shell=True)
-		file_writer.close()
-	else:
+	if not os.access("list", os.F_OK):
 		file_writer = open("list", "w")
 		file_writer.write("")
 		file_writer.close()
+
+	for lists in open("list", "r"):
+		filename = lists.rstrip().split()[0]
+		list_checksum = lists.rstrip().split()[1]
+		if not os.access(filename, os.F_OK):
+			Popen("git rm " + filename, shell=True).wait()
+
+	file_writer = open("list", "w")
+	file_writer.write("")
+
+	for root, dirs, files in os.walk("."):
+		for name in files:
+			if not os.path.join(root[2:], name) == "list" and not os.path.join(root[2:], name).startswith(".git/"):
+				file_reader = open(os.path.join(root[2:], name), "r")
+				file_content = file_reader.read()
+				file_reader.close()
+				file_checksum = md5(file_content).hexdigest()
+				file_writer.write(os.path.join(root[2:], name) + " " + file_checksum + "\n")
+
+	file_writer.close()
+	Popen("git add .", shell=True)
 
 	if len(argv) > 1:
 		commit = "["+revision+"] "+' '.join(argv[1:])
