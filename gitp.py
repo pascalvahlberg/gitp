@@ -3,6 +3,7 @@
 from sys import argv, exit
 from subprocess import Popen, PIPE
 from hashlib import md5
+import os
 
 try:
 	i = 1000
@@ -21,7 +22,33 @@ try:
 	f = open("version", "w")
 	f.write(version)
 	f.close()
-	Popen("git add .", shell=True).wait()
+
+	if os.access("list", os.F_OK):
+		for lists in open("list", "r"):
+			filename = lists.rstrip().split()[0]
+			list_checksum = lists.rstrip().split()[1]
+			if not os.access(filename, os.F_OK):
+				Popen("git rm " + filename, shell=True).wait()
+
+		file_writer = open("list", "w")
+		file_writer.write("")
+
+		for root, dirs, files in os.walk("."):
+			for name in files:
+				if not os.path.join(root[2:], name) == "list" and not os.path.join(root[2:], name).startswith(".git/"):
+					file_reader = open(os.path.join(root[2:], name), "r")
+					file_content = file_reader.read()
+					file_reader.close()
+					file_checksum = md5(file_content).hexdigest()
+					file_writer.write(os.path.join(root[2:], name) + " " + file_checksum + "\n")
+					Popen("git add " + os.path.join(root[2:], name), shell=True)
+
+		Popen("git add list", shell=True)
+		file_writer.close()
+	else:
+		file_writer = open("list", "w")
+		file_writer.write("")
+		file_writer.close()
 
 	if len(argv) > 1:
 		commit = "["+revision+"] "+' '.join(argv[1:])
