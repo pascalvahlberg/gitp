@@ -3,6 +3,7 @@
 from sys import argv, exit
 from subprocess import Popen, PIPE
 from hashlib import md5
+from fnmatch import fnmatch
 import os
 
 try:
@@ -23,7 +24,7 @@ try:
 	f.write(version)
 	f.close()
 
-	if not os.access("list", os.F_OK):
+	if not os.access("list", os.R_OK):
 		file_writer = open("list", "w")
 		file_writer.write("")
 		file_writer.close()
@@ -31,7 +32,7 @@ try:
 	for lists in open("list", "r"):
 		filename = lists.rstrip().split()[0]
 		list_checksum = lists.rstrip().split()[1]
-		if not os.access(filename, os.F_OK):
+		if not os.access(filename, os.R_OK):
 			Popen("git rm " + filename, shell=True).wait()
 
 	file_writer = open("list", "w")
@@ -40,11 +41,20 @@ try:
 	for root, dirs, files in os.walk("."):
 		for name in files:
 			if not os.path.join(root[2:], name) == "list" and not os.path.join(root[2:], name).startswith(".git/"):
-				file_reader = open(os.path.join(root[2:], name), "r")
-				file_content = file_reader.read()
-				file_reader.close()
-				file_checksum = md5(file_content).hexdigest()
-				file_writer.write(os.path.join(root[2:], name) + " " + file_checksum + "\n")
+				if os.access(".gitignore", os.R_OK):
+					for ignore in open(".gitignore", "r"):
+						if not fnmatch(ignore, os.path.join(root[2:], name)):
+							file_reader = open(os.path.join(root[2:], name), "r")
+							file_content = file_reader.read()
+							file_reader.close()
+							file_checksum = md5(file_content).hexdigest()
+							file_writer.write(os.path.join(root[2:], name) + " " + file_checksum + "\n")
+				else:
+					file_reader = open(os.path.join(root[2:], name), "r")
+					file_content = file_reader.read()
+					file_reader.close()
+					file_checksum = md5(file_content).hexdigest()
+					file_writer.write(os.path.join(root[2:], name) + " " + file_checksum + "\n")
 
 	file_writer.close()
 	Popen("git add .", shell=True)
