@@ -40,7 +40,7 @@ try:
 
 	for root, dirs, files in os.walk("."):
 		for name in files:
-			if not os.path.join(root[2:], name) == "list" and not os.path.join(root[2:], name).startswith(".git/"):
+			if not os.path.join(root[2:], name) == "list" and not os.path.join(root[2:], name) == "version" and not os.path.join(root[2:], name).startswith(".git/"):
 				if os.access(".gitignore", os.R_OK):
 					for ignore in open(".gitignore", "r"):
 						if not fnmatch(os.path.join(root[2:], name), ignore.rstrip()) and not fnmatch(name, ignore.rstrip()):
