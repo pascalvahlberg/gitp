@@ -43,7 +43,7 @@ try:
 			if not os.path.join(root[2:], name) == "list" and not os.path.join(root[2:], name).startswith(".git/"):
 				if os.access(".gitignore", os.R_OK):
 					for ignore in open(".gitignore", "r"):
-						if not fnmatch(os.path.join(root[2:], name), ignore):
+						if not fnmatch(os.path.join(root[2:], name), ignore.rstrip()) and not fnmatch(name, ignore.rstrip()):
 							file_reader = open(os.path.join(root[2:], name), "r")
 							file_content = file_reader.read()
 							file_reader.close()
