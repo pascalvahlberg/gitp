@@ -32,7 +32,7 @@ try:
 		filename = lists.rstrip().split()[0]
 		list_checksum = lists.rstrip().split()[1]
 		if not os.access(filename, os.R_OK):
-			Popen("git rm " + filename, shell=True).wait()
+			Popen("git rm " + filename.replace(" ", "\\ "), shell=True).wait()
 
 	file_writer = open("list", "w")
 	file_writer.write("")
