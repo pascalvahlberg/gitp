@@ -4,7 +4,7 @@ from sys import argv, exit
 from subprocess import Popen, PIPE
 from hashlib import md5
 from fnmatch import fnmatch
-import os
+from os import access, walk, path, R_OK
 
 try:
 	revision = Popen("git log --oneline | wc -l", shell=True, stdout=PIPE).stdout.read().rstrip()
@@ -23,7 +23,7 @@ try:
 	f.write(version)
 	f.close()
 
-	if not os.access("list", os.R_OK):
+	if not access("list", R_OK):
 		file_writer = open("list", "w")
 		file_writer.write("")
 		file_writer.close()
@@ -31,28 +31,28 @@ try:
 	for lists in open("list", "r"):
 		filename = lists.rstrip().split()[0]
 		list_checksum = lists.rstrip().split()[1]
-		if not os.access(filename, os.R_OK):
+		if not access(filename, R_OK):
 			Popen("git rm " + filename.replace(" ", "\\ "), shell=True).wait()
 
 	file_writer = open("list", "w")
 	file_writer.write("")
 
-	for root, dirs, files in os.walk("."):
+	for root, dirs, files in walk("."):
 		for name in files:
-			if not os.path.join(root[2:], name) == "list" and not os.path.join(root[2:], name) == "version" and not os.path.join(root[2:], name) == ".gitignore" and not os.path.join(root[2:], name).startswith(".git/"):
+			if not path.join(root[2:], name) == "list" and not path.join(root[2:], name) == "version" and not path.join(root[2:], name) == ".gitignore" and not path.join(root[2:], name).startswith(".git/"):
 				ignored = False
 
-				if os.access(".gitignore", os.R_OK):
+				if access(".gitignore", R_OK):
 					for ignore in open(".gitignore", "r"):
-						if fnmatch(os.path.join(root[2:], name), ignore.rstrip()) or fnmatch(name, ignore.rstrip()):
+						if fnmatch(path.join(root[2:], name), ignore.rstrip()) or fnmatch(name, ignore.rstrip()):
 							ignored = True
 
 				if not ignored:				
-					file_reader = open(os.path.join(root[2:], name), "r")
+					file_reader = open(path.join(root[2:], name), "r")
 					file_content = file_reader.read()
 					file_reader.close()
 					file_checksum = md5(file_content).hexdigest()
-					file_writer.write(os.path.join(root[2:], name) + " " + file_checksum + "\n")
+					file_writer.write(path.join(root[2:], name) + " " + file_checksum + "\n")
 
 	file_writer.close()
 	Popen("git add .", shell=True).wait()
