@@ -29,10 +29,10 @@ try:
 		file_writer.close()
 
 	for lists in open("list", "r"):
-		filename = lists.rstrip().split()[0]
-		list_checksum = lists.rstrip().split()[1]
+		filename = lists.rstrip()[:-33]
+		list_checksum = lists.rstrip().split()[-32:]
 		if not access(filename, R_OK):
-			Popen("git rm " + filename.replace(" ", "\\ "), shell=True).wait()
+			Popen("git rm " + filename.replace(" ", "\ "), shell=True).wait()
 
 	file_writer = open("list", "w")
 	file_writer.write("")
