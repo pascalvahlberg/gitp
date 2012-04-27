@@ -7,26 +7,20 @@ from fnmatch import fnmatch
 from os import access, walk, path, R_OK
 
 try:
-	revision = Popen("git log --oneline | wc -l", shell=True, stdout=PIPE).stdout.read().rstrip()
-	revision = str(int(revision) + 1)
+	prerevision = Popen("git log --oneline | wc -l", shell=True, stdout=PIPE).stdout.read().rstrip()
+	refs = Popen("git remote", shell=True, stdout=PIPE).stdout.read().rstrip()
 
-	if len(revision) > 3:
-		version = revision[:-3] + "." + revision[-3:]
-	elif len(revision) == 3:
-		version = "0." + revision
-	elif len(revision) == 2:
-		version = "0.0" + revision
-	else:
-		version = "0.00" + revision
-
-	f = open("version", "w")
-	f.write(version)
-	f.close()
+	for ref in refs.splitlines():
+		Popen("git pull " + ref + " master", shell=True).wait()
 
 	if not access("list", R_OK):
 		file_writer = open("list", "w")
 		file_writer.write("")
 		file_writer.close()
+
+	listfile = open("list", "r")
+	listprehash = md5(listfile.read()).hexdigest()
+	listfile.close()
 
 	for lists in open("list", "r"):
 		filename = lists.rstrip()[:-33]
@@ -55,19 +49,43 @@ try:
 					file_writer.write(path.join(root[2:], name) + " " + file_checksum + "\n")
 
 	file_writer.close()
-	Popen("git add .", shell=True).wait()
 
-	if len(argv) > 1:
-		commit = "[" + revision + "] " + ' '.join(argv[1:])
+	listfile = open("list", "r")
+	listhash = md5(listfile.read()).hexdigest()
+	listfile.close()
+
+	if listprehash != listhash:
+		revision = Popen("git log --oneline | wc -l", shell=True, stdout=PIPE).stdout.read().rstrip()
+		revision = str(int(revision) + 1)
+
+		if len(revision) > 3:
+			version = revision[:-3] + "." + revision[-3:]
+		elif len(revision) == 3:
+			version = "0." + revision
+		elif len(revision) == 2:
+			version = "0.0" + revision
+		else:
+			version = "0.00" + revision
+
+		f = open("version", "w")
+		f.write(version)
+		f.close()
+
+		Popen("git add .", shell=True).wait()
+
+		if len(argv) > 1:
+			commit = "[" + revision + "] " + ' '.join(argv[1:])
+		else:
+			file_reader = open("list", "r")
+			file_content = file_reader.read()
+			file_reader.close()
+			file_checksum = md5(file_content).hexdigest()
+			commit = "[" + revision + "] Other/Checksum: " + file_checksum
+
+		Popen("git commit -m '" + commit + "' -s", shell=True).wait()
+		Popen("git push origin master", shell=True).wait()
 	else:
-		file_reader = open("list", "r")
-		file_content = file_reader.read()
-		file_reader.close()
-		file_checksum = md5(file_content).hexdigest()
-		commit = "[" + revision + "] Other/Checksum: " + file_checksum
-
-	Popen("git commit -m '" + commit + "' -s", shell=True).wait()
-	Popen("git push origin --all", shell=True).wait()
+		print("No update needed.")
 
 except Exception,e:
 	print(e)
