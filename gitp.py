@@ -7,7 +7,6 @@ from fnmatch import fnmatch
 from os import access, walk, path, R_OK
 
 try:
-	prerevision = Popen("git log --oneline | wc -l", shell=True, stdout=PIPE).stdout.read().rstrip()
 	refs = Popen("git remote", shell=True, stdout=PIPE).stdout.read().rstrip()
 
 	for ref in refs.splitlines():
