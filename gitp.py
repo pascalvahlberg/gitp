@@ -67,7 +67,7 @@ try:
 		commit = "[" + revision + "] Other/Checksum: " + file_checksum
 
 	Popen("git commit -m '" + commit + "' -s", shell=True).wait()
-	Popen("git push origin master", shell=True).wait()
+	Popen("git push origin --all", shell=True).wait()
 
 except Exception,e:
 	print(e)
