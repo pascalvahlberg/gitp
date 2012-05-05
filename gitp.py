@@ -19,6 +19,7 @@ try:
 		file_writer.write("")
 		file_writer.close()
 
+	print("% Creating listprehash")
 	listfile = open("list", "r")
 	listprehash = md5(listfile.read()).hexdigest()
 	listfile.close()
@@ -59,6 +60,7 @@ try:
 	listhash = md5(listfile.read()).hexdigest()
 	listfile.close()
 
+	print("% Comparing listhashes")
 	if listprehash != listhash:
 		revision = Popen("git log --oneline | wc -l", shell=True, stdout=PIPE).stdout.read().rstrip()
 		print("% Getting new revision")
@@ -95,7 +97,7 @@ try:
 		print("% Pushing to repository")
 		Popen("git push origin master", shell=True).wait()
 	else:
-		print("No update needed.")
+		print("% No update needed.")
 
 except Exception,e:
 	print(e)
