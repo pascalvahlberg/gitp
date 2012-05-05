@@ -81,16 +81,16 @@ try:
 		Popen("git add .", shell=True).wait()
 
 		if len(argv) > 1:
-			commit = "[" + revision + "] " + ' '.join(argv[1:])
+			commit = ' '.join(argv[1:])
 		else:
 			file_reader = open("list", "r")
 			file_content = file_reader.read()
 			file_reader.close()
 			file_checksum = md5(file_content).hexdigest()
-			commit = "[" + revision + "] Other/Checksum: " + file_checksum
+			commit = "Other/Checksum: " + file_checksum
 
 		print("% Commiting '" + commit + "'")
-		Popen("git commit -m '" + commit + "' -s", shell=True, stdout=PIPE).stdout.read().rstrip()
+		Popen("git commit -m '[" + revision + "] " + commit + "' -s", shell=True, stdout=PIPE).stdout.read().rstrip()
 		print("% Pushing to repository")
 		Popen("git push origin master", shell=True).wait()
 	else:
