@@ -92,7 +92,7 @@ try:
 			file_checksum = md5(file_content).hexdigest()
 			commit = "Other/Checksum: " + file_checksum
 
-		print("% Commiting '" + commit + "'")
+		print("% Committing '" + commit + "'")
 		Popen("git commit -m '[" + revision + "] " + commit + "' -s", shell=True, stdout=PIPE).stdout.read().rstrip()
 		print("% Pushing to repository")
 		Popen("git push origin master", shell=True).wait()
