@@ -13,6 +13,7 @@ try:
 		Popen("git pull " + ref + " master", shell=True).wait()
 
 	if not access("list", R_OK):
+		print("% Creating list")
 		file_writer = open("list", "w")
 		file_writer.write("")
 		file_writer.close()
@@ -25,8 +26,10 @@ try:
 		filename = lists.rstrip()[:-33]
 		list_checksum = lists.rstrip().split()[-32:]
 		if not access(filename, R_OK):
-			Popen("git rm --cached " + filename.replace(" ", "\ "), shell=True).wait()
+			print("% Removing '" + filename + "'")
+			Popen("git rm --cached " + filename.replace(" ", "\ "), shell=True, stdout=PIPE).stdout.read().rstrip()
 
+	print("% Clearing list")
 	file_writer = open("list", "w")
 	file_writer.write("")
 
@@ -45,18 +48,22 @@ try:
 					file_content = file_reader.read()
 					file_reader.close()
 					file_checksum = md5(file_content).hexdigest()
+					print("% Adding '" + path.join(root[2:], name) + "' (" + file_checksum + ")")
 					file_writer.write(path.join(root[2:], name) + " " + file_checksum + "\n")
 
 	file_writer.close()
 
+	print("% Creating listhash")
 	listfile = open("list", "r")
 	listhash = md5(listfile.read()).hexdigest()
 	listfile.close()
 
 	if listprehash != listhash:
 		revision = Popen("git log --oneline | wc -l", shell=True, stdout=PIPE).stdout.read().rstrip()
+		print("% Getting new revision")
 		revision = str(int(revision) + 1)
 
+		print("% Creating new version")
 		if len(revision) > 3:
 			version = revision[:-3] + "." + revision[-3:]
 		elif len(revision) == 3:
@@ -66,6 +73,7 @@ try:
 		else:
 			version = "0.00" + revision
 
+		print("% Writing new version")
 		f = open("version", "w")
 		f.write(version)
 		f.close()
