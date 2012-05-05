@@ -10,7 +10,8 @@ try:
 	refs = Popen("git remote", shell=True, stdout=PIPE).stdout.read().rstrip()
 
 	for ref in refs.splitlines():
-		Popen("git pull " + ref + " master", shell=True).wait()
+		print("% Fetching '" + ref + "'")
+		Popen("git pull " + ref + " master", shell=True, stdout=PIPE).stdout.read().rstrip()
 
 	if not access("list", R_OK):
 		print("% Creating list")
