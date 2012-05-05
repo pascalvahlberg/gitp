@@ -101,5 +101,9 @@ try:
 
 except Exception,e:
 	print(e)
+	exit(0)
+except KeyboardInterrupt,e:
+	print("Ctrl + C")
+	exit(0)
 
 exit(0)
