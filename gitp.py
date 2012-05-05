@@ -63,7 +63,7 @@ try:
 		print("% Getting new revision")
 		revision = str(int(revision) + 1)
 
-		print("% Creating new version")
+		print("% Creating version")
 		if len(revision) > 3:
 			version = revision[:-3] + "." + revision[-3:]
 		elif len(revision) == 3:
@@ -73,7 +73,7 @@ try:
 		else:
 			version = "0.00" + revision
 
-		print("% Writing new version")
+		print("% Writing version")
 		f = open("version", "w")
 		f.write(version)
 		f.close()
@@ -89,7 +89,9 @@ try:
 			file_checksum = md5(file_content).hexdigest()
 			commit = "[" + revision + "] Other/Checksum: " + file_checksum
 
-		Popen("git commit -m '" + commit + "' -s", shell=True).wait()
+		print("% Commiting '" + commit + "'")
+		Popen("git commit -m '" + commit + "' -s", shell=True, stdout=PIPE).stdout.read().rstrip()
+		print("% Pushing to repository")
 		Popen("git push origin master", shell=True).wait()
 	else:
 		print("No update needed.")
