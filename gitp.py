@@ -11,7 +11,7 @@ try:
 
 	for ref in refs.splitlines():
 		print("% Fetching '" + ref + "'")
-		Popen("git pull " + ref + " master", shell=True, stdout=PIPE).stdout.read().rstrip()
+		Popen("git fetch " + ref + " master", shell=True, stdout=PIPE).stdout.read().rstrip()
 
 	if not access("list", R_OK):
 		print("% Creating list")
