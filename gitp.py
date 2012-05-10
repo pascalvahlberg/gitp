@@ -28,7 +28,7 @@ try:
 		filename = lists.rstrip()[:-33]
 		list_checksum = lists.rstrip().split()[-32:]
 		if not access(filename, R_OK):
-			print("% Removing '" + filename + "'")
+			print("% Remove '" + filename + "'")
 			Popen("git rm --cached " + filename.replace(" ", "\ "), shell=True, stdout=PIPE).stdout.read().rstrip()
 
 	print("% Clearing list")
@@ -50,7 +50,7 @@ try:
 					file_content = file_reader.read()
 					file_reader.close()
 					file_checksum = md5(file_content).hexdigest()
-					print("% Adding '" + path.join(root[2:], name) + "' (" + file_checksum + ")")
+					print("% Add '" + path.join(root[2:], name) + "'")
 					file_writer.write(path.join(root[2:], name) + " " + file_checksum + "\n")
 
 	file_writer.close()
