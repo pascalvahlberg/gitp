@@ -45,7 +45,7 @@ try:
 						if fnmatch(path.join(root[2:], name), ignore.rstrip()) or fnmatch(name, ignore.rstrip()):
 							ignored = True
 
-				if not ignored:				
+				if not ignored:
 					file_reader = open(path.join(root[2:], name), "r")
 					file_content = file_reader.read()
 					file_reader.close()
