@@ -105,7 +105,7 @@ try:
 		print(blue("*") + " Committing '" + commit + "'")
 		Popen("git commit -m '[" + revision + "] " + commit + "' -s", shell=True, stdout=PIPE).stdout.read().rstrip()
 		print(green("*") + " Pushing to repository")
-		Popen("git push origin master", shell=True).wait()
+		Popen("git push --quiet origin master", shell=True).wait()
 	else:
 		print(green("*") + " No update needed.")
 
