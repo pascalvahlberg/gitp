@@ -110,7 +110,7 @@ try:
 		print(green("*") + " No update needed.")
 
 except Exception,e:
-	print(red("*") + " " + e)
+	print(red("*") + " " + str(e))
 	exit(0)
 except KeyboardInterrupt,e:
 	print(red("*") + " Ctrl + C")
