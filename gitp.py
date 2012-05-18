@@ -117,6 +117,7 @@ except Exception,e:
 	print(red("*") + " " + str(e))
 	exit(0)
 except KeyboardInterrupt,e:
+	print("")
 	print(red("*") + " Ctrl + C")
 	exit(0)
 
