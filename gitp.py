@@ -20,7 +20,9 @@ try:
 
 	for ref in refs.splitlines():
 		print(green("*") + " Fetching '" + ref + "'")
-		Popen("git pull --quiet " + ref + " master", shell=True, stdout=PIPE).stdout.read().rstrip()
+		raw_data = Popen("git pull --quiet " + ref + " master", shell=True, stdout=PIPE).stdout.read().rstrip()
+		for data in raw_data.splitlines():
+			print(red("*") + " " + data)
 
 	if not access("list", R_OK):
 		print(blue("*") + " Creating list")
