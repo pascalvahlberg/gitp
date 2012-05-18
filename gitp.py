@@ -46,7 +46,7 @@ try:
 	file_writer = open("list", "w")
 	file_writer.write("")
 
-	for root, dirs, files in walk("."):
+	for root, dirs, files in sorted(walk(".")):
 		files.sort()
 		for name in files:
 			if not path.join(root[2:], name) == "list" and not path.join(root[2:], name) == "version" and not path.join(root[2:], name) == ".gitignore" and not path.join(root[2:], name).startswith(".git/"):
