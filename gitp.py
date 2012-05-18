@@ -20,9 +20,9 @@ try:
 
 	for ref in refs.splitlines():
 		print(green("*") + " Fetching '" + ref + "'")
-		raw_data = Popen("git pull " + ref + " master", shell=True, stdout=PIPE).stdout.read().rstrip()
+		raw_data = Popen("git pull --quiet " + ref + " master", shell=True, stdout=PIPE).stdout.read().rstrip()
 		for data in raw_data.splitlines():
-			print(green("*") + " " + data)
+			print(red("*") + " " + data)
 
 	if not access("list", R_OK):
 		print(blue("*") + " Creating list")
@@ -107,9 +107,9 @@ try:
 		print(blue("*") + " Committing '" + commit + "'")
 		Popen("git commit -m '[" + revision + "] " + commit + "' -s", shell=True, stdout=PIPE).stdout.read().rstrip()
 		print(green("*") + " Pushing to repository")
-		raw_data = Popen("git push origin master", shell=True, stdout=PIPE).stdout.read().rstrip()
+		raw_data = Popen("git push --quiet origin master", shell=True, stdout=PIPE).stdout.read().rstrip()
 		for data in raw_data.splitlines():
-			print(green("*") + " " + data)
+			print(red("*") + " " + data)
 	else:
 		print(green("*") + " No update needed.")
 
