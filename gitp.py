@@ -107,7 +107,9 @@ try:
 		print(blue("*") + " Committing '" + commit + "'")
 		Popen("git commit -m '[" + revision + "] " + commit + "' -s", shell=True, stdout=PIPE).stdout.read().rstrip()
 		print(green("*") + " Pushing to repository")
-		Popen("git push --quiet origin master", shell=True).wait()
+		raw_data = Popen("git push --quiet origin master", shell=True, stdout=PIPE).stdout.read().rstrip()
+		for data in raw_data.splitlines():
+			print(red("*") + " " + data)
 	else:
 		print(green("*") + " No update needed.")
 
