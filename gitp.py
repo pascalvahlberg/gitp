@@ -40,7 +40,9 @@ try:
 		filename = lists.rstrip()[:-33]
 		list_checksum = lists.rstrip().split()[-32:]
 		if not access(filename, R_OK):
-			Popen("git rm --cached " + filename.replace(" ", "\ "), shell=True, stdout=PIPE).stdout.read().rstrip()
+			raw_data = Popen("git rm --quiet --cached " + filename.replace(" ", "\ "), shell=True, stdout=PIPE).stdout.read().rstrip()
+			for data in raw_data.splitlines():
+				print(red("*") + " " + data)
 
 	print(blue("*") + " Clearing list")
 	file_writer = open("list", "w")
@@ -93,7 +95,9 @@ try:
 		f.write(version)
 		f.close()
 
-		Popen("git add .", shell=True).wait()
+		raw_data = Popen("git add .", shell=True, stdout=PIPE).stdout.read().rstrip()
+		for data in raw_data.splitlines():
+			print(red("*") + " " + data)
 
 		if len(argv) > 1:
 			commit = ' '.join(argv[1:])
@@ -105,7 +109,9 @@ try:
 			commit = "Other/Checksum: " + file_checksum
 
 		print(blue("*") + " Committing '" + commit + "'")
-		Popen("git commit -m '[" + revision + "] " + commit + "' -s", shell=True, stdout=PIPE).stdout.read().rstrip()
+		raw_data = Popen("git commit -m '[" + revision + "] " + commit + "' -s", shell=True, stdout=PIPE).stdout.read().rstrip()
+		for data in raw_data.splitlines():
+			print(red("*") + " " + data)
 		print(green("*") + " Pushing to repository")
 		raw_data = Popen("git push --quiet origin master", shell=True, stdout=PIPE).stdout.read().rstrip()
 		for data in raw_data.splitlines():
