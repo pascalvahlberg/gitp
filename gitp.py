@@ -61,10 +61,13 @@ try:
 							ignored = True
 
 				if not ignored:
-					file_reader = open(path.join(root[2:], name), "r")
-					file_content = file_reader.read()
-					file_reader.close()
-					file_checksum = md5(file_content).hexdigest()
+					file_checksum = md5("").hexdigest()
+					if access(path.join(root[2:], name), R_OK):
+						file_reader = open(path.join(root[2:], name), "r")
+						file_content = file_reader.read()
+						file_reader.close()
+						file_checksum = md5(file_content).hexdigest()
+
 					file_writer.write(path.join(root[2:], name) + " " + file_checksum + "\n")
 
 	file_writer.close()
