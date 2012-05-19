@@ -38,14 +38,15 @@ try:
 	for lists in open("list", "r"):
 		filename = lists.rstrip()[:-33]
 		list_checksum = lists.rstrip().split()[-32:]
+		print(blue("*") + " Removing non-existing files")
 		if not access(filename, R_OK):
-			print(blue("*") + " Removing '" + filename + "'")
 			Popen("git rm --cached " + filename.replace(" ", "\ "), shell=True, stdout=PIPE).stdout.read().rstrip()
 
 	print(blue("*") + " Clearing list")
 	file_writer = open("list", "w")
 	file_writer.write("")
-
+	
+	print(blue("*") + " Listing files")
 	for root, dirs, files in sorted(walk(".")):
 		files.sort()
 		for name in files:
@@ -62,7 +63,6 @@ try:
 					file_content = file_reader.read()
 					file_reader.close()
 					file_checksum = md5(file_content).hexdigest()
-					print(blue("*") + " Adding '" + path.join(root[2:], name) + "'")
 					file_writer.write(path.join(root[2:], name) + " " + file_checksum + "\n")
 
 	file_writer.close()
