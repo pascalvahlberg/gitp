@@ -46,7 +46,7 @@ try:
 	file_writer = open("list", "w")
 	file_writer.write("")
 	
-	print(blue("*") + " Listing files")
+	print(blue("*") + " Adding existing files")
 	for root, dirs, files in sorted(walk(".")):
 		files.sort()
 		for name in files:
