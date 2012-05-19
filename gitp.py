@@ -109,9 +109,9 @@ try:
 			commit = "Other/Checksum: " + file_checksum
 
 		print(blue("*") + " Committing '" + commit + "'")
-		raw_data = Popen("git commit -m '[" + revision + "] " + commit + "' -s", shell=True, stdout=PIPE).stdout.read().rstrip()
+		raw_data = Popen("git commit --quiet --message '[" + revision + "] " + commit + "' --signoff", shell=True, stdout=PIPE).stdout.read().rstrip()
 		for data in raw_data.splitlines():
-			print(blue("*") + " " + data)
+			print(red("*") + " " + data)
 		print(green("*") + " Pushing to repository")
 		raw_data = Popen("git push --quiet origin master", shell=True, stdout=PIPE).stdout.read().rstrip()
 		for data in raw_data.splitlines():
