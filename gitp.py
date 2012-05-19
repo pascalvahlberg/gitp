@@ -111,7 +111,7 @@ try:
 		print(blue("*") + " Committing '" + commit + "'")
 		raw_data = Popen("git commit -m '[" + revision + "] " + commit + "' -s", shell=True, stdout=PIPE).stdout.read().rstrip()
 		for data in raw_data.splitlines():
-			print(red("*") + " " + data)
+			print(green("*") + " " + data)
 		print(green("*") + " Pushing to repository")
 		raw_data = Popen("git push --quiet origin master", shell=True, stdout=PIPE).stdout.read().rstrip()
 		for data in raw_data.splitlines():
