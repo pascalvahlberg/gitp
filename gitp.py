@@ -30,7 +30,7 @@ try:
 		file_writer.write("")
 		file_writer.close()
 
-	print(blue("*") + " Creating listprehash")
+	print(blue("*") + " Creating listhash")
 	listfile = open("list", "r")
 	listprehash = md5(listfile.read()).hexdigest()
 	listfile.close()
