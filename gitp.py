@@ -35,10 +35,10 @@ try:
 	listprehash = md5(listfile.read()).hexdigest()
 	listfile.close()
 
+	print(blue("*") + " Removing non-existing files")
 	for lists in open("list", "r"):
 		filename = lists.rstrip()[:-33]
 		list_checksum = lists.rstrip().split()[-32:]
-		print(blue("*") + " Removing non-existing files")
 		if not access(filename, R_OK):
 			Popen("git rm --cached " + filename.replace(" ", "\ "), shell=True, stdout=PIPE).stdout.read().rstrip()
 
