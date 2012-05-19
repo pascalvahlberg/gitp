@@ -40,7 +40,7 @@ try:
 		filename = lists.rstrip()[:-33]
 		list_checksum = lists.rstrip().split()[-32:]
 		if not access(filename, R_OK):
-			raw_data = Popen("git rm --quiet --cached " + filename.replace(" ", "\ "), shell=True, stdout=PIPE).stdout.read().rstrip()
+			raw_data = Popen("git rm --quiet --cached --force " + filename.replace(" ", "\ "), shell=True, stdout=PIPE).stdout.read().rstrip()
 			for data in raw_data.splitlines():
 				print(red("*") + " " + data)
 
