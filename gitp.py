@@ -115,10 +115,12 @@ try:
 		raw_data = Popen("git commit --quiet --message '[" + revision + "] " + commit + "' --signoff", shell=True, stdout=PIPE).stdout.read().rstrip()
 		for data in raw_data.splitlines():
 			print(red("*") + " " + data)
-		print(green("*") + " Pushing to repository")
-		raw_data = Popen("git push --quiet origin master", shell=True, stdout=PIPE).stdout.read().rstrip()
-		for data in raw_data.splitlines():
-			print(red("*") + " " + data)
+
+		for ref in refs.splitlines():
+			print(green("*") + " Pushing to repository '" + ref + "'")
+			raw_data = Popen("git push --quiet " + ref + " master", shell=True, stdout=PIPE).stdout.read().rstrip()
+			for data in raw_data.splitlines():
+				print(red("*") + " " + data)
 	else:
 		print(green("*") + " No update needed.")
 
