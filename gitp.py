@@ -19,7 +19,7 @@ try:
 	refs = Popen("git remote", shell=True, stdout=PIPE).stdout.read().rstrip()
 
 	for ref in refs.splitlines():
-		print(green("*") + " Fetching '" + ref + "'")
+		print(green("*") + " Pulling '" + ref + "'")
 		raw_data = Popen("git pull --quiet " + ref + " master", shell=True, stdout=PIPE).stdout.read().rstrip()
 		for data in raw_data.splitlines():
 			print(red("*") + " " + data)
@@ -117,7 +117,7 @@ try:
 			print(red("*") + " " + data)
 
 		for ref in refs.splitlines():
-			print(green("*") + " Pushing to repository '" + ref + "'")
+			print(green("*") + " Pushing '" + ref + "'")
 			raw_data = Popen("git push --quiet " + ref + " master", shell=True, stdout=PIPE).stdout.read().rstrip()
 			for data in raw_data.splitlines():
 				print(red("*") + " " + data)
