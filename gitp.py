@@ -102,9 +102,24 @@ try:
 		for data in raw_data.splitlines():
 			print(red("*") + " " + data)
 
+		repository = "origin master"
+
+		hascommit = False
 		if len(argv) > 1:
-			commit = ' '.join(argv[1:])
-		else:
+			if len(argv) > 3:
+				if argv[-3] == "-r":
+					repository = ' '.join(argv[-2:])
+					commit = ' '.join(argv[1:-3])
+					if len(argv) > 4:
+						hascommit = True
+				else:
+					commit = ' '.join(argv[1:])
+					hascommit = True
+			else:
+				commit = ' '.join(argv[1:])
+				hascommit = True
+
+		if not hascommit:
 			file_reader = open("list", "r")
 			file_content = file_reader.read()
 			file_reader.close()
@@ -116,8 +131,8 @@ try:
 		for data in raw_data.splitlines():
 			print(red("*") + " " + data)
 
-		print(green("*") + " Pushing to repository")
-		raw_data = Popen("git push --quiet origin master", shell=True, stdout=PIPE).stdout.read().rstrip()
+		print(green("*") + " Pushing to '" + repository + "'")
+		raw_data = Popen("git push --quiet " + repository, shell=True, stdout=PIPE).stdout.read().rstrip()
 		for data in raw_data.splitlines():
 			print(red("*") + " " + data)
 	else:
