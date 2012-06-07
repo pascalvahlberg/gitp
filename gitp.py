@@ -18,11 +18,15 @@ try:
 
 	refs = Popen("git remote", shell=True, stdout=PIPE).stdout.read().rstrip()
 
+	pull_deleted = list()
 	for ref in refs.splitlines():
 		print(green("*") + " Pulling '" + ref + "'")
 		raw_data = Popen("git pull --quiet " + ref + " master", shell=True, stdout=PIPE).stdout.read().rstrip()
 		for data in raw_data.splitlines():
 			print(red("*") + " " + data)
+			part = data.split()
+			if part[0] == "Removing":
+				pull_deleted.append(part[1])
 
 	if not access("list", R_OK):
 		print(blue("*") + " Creating list")
@@ -40,9 +44,11 @@ try:
 		filename = lists.rstrip()[:-33]
 		list_checksum = lists.rstrip().split()[-32:]
 		if not access(filename, R_OK):
-			raw_data = Popen("git rm --quiet --cached --force " + filename.replace(" ", "\ "), shell=True, stdout=PIPE).stdout.read().rstrip()
-			for data in raw_data.splitlines():
-				print(red("*") + " " + data)
+			for deleted_file in pull_deleted:
+				if filename != deleted_file:
+					raw_data = Popen("git rm --quiet --cached --force " + filename.replace(" ", "\ "), shell=True, stdout=PIPE).stdout.read().rstrip()
+					for data in raw_data.splitlines():
+						print(red("*") + " " + data)
 
 	print(blue("*") + " Clearing list")
 	file_writer = open("list", "w")
