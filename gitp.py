@@ -41,14 +41,18 @@ try:
 
 	print(blue("*") + " Removing non-existing files")
 	for lists in open("list", "r"):
+		delete_it = True
 		filename = lists.rstrip()[:-33]
 		list_checksum = lists.rstrip().split()[-32:]
 		if not access(filename, R_OK):
 			for deleted_file in pull_deleted:
-				if filename != deleted_file:
-					raw_data = Popen("git rm --quiet --cached --force " + filename.replace(" ", "\ "), shell=True, stdout=PIPE).stdout.read().rstrip()
-					for data in raw_data.splitlines():
-						print(red("*") + " " + data)
+				if filename == deleted_file:
+					delete_it = False
+
+		if delete_it:
+			raw_data = Popen("git rm --quiet --cached --force " + filename.replace(" ", "\ "), shell=True, stdout=PIPE).stdout.read().rstrip()
+			for data in raw_data.splitlines():
+				print(red("*") + " " + data)
 
 	print(blue("*") + " Clearing list")
 	file_writer = open("list", "w")
